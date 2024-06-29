@@ -1,0 +1,7 @@
+1. access footage from camera                        
+2. detect vehicles on street                       
+3. save no. of vehicles in a variable 
+4. compare number of vehicles
+5. give priority to emergency vehicles
+6. make decision in python
+7. send signal to arduino for green/red light
