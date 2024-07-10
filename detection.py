@@ -1,27 +1,9 @@
 print("loading packages.....\n\n")
 import cv2
 import numpy as np
-import serial
-import time
-
-arduino = serial.Serial(port='COM6', baudrate=9600,timeout=1)  #Set up the serial connection (adjust 'COM6' to your Arduino's port)
-time.sleep(2)  # Give some time for the connection to establish
-
-print("connection established with Arduino\n")
-
-
-#Sendin decision to Arduino using Serial port
-def sendbit(bit):
-    if bit in (0, 1):
-        # Convert bit to string and encode it to bytes
-        arduino.write(str(bit).encode())
-        print("sent bit ", bit)
-    else:
-        print("Invalid bit. Please send 0 or 1.")
-
-
+from send import sendbit
 # Load YOLO
-net = cv2.dnn.readNet(".venv\yolov3.weights", ".venv\yolov3.cfg")
+net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
 layer_names = net.getLayerNames()
 
 output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
