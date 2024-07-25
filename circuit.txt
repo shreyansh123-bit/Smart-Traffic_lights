@@ -1,0 +1,7 @@
+Left motor pin - 9
+Right mpotor pin - 6
+
+RED_LEFT_PIN = 8;
+GREEN_LEFT_PIN = 7;
+RED_RIGHT_PIN = 4;
+GREEN_RIGHT_PIN = 3;
