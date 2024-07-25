@@ -1,19 +1,27 @@
 import os
 os.system('cls')
+import datetime as dt
+starttime=dt.datetime.now()
+print(f"start time : {starttime}")
 print("setting up systems...")
 import serial
 ser = serial.Serial('COM6', 9600)
-import datetime as dt
 import cv2
 from ultralytics import YOLO
 
+def send_bit(char):
+    if char in ['1', '0']:
+        ser.write(char.encode())
+    else:
+        print("Invalid character. Only '1' or '0' are allowed.")
 
 #best_hist provides best results
 model = YOLO('best_hist.pt')
 
 print("accessing video footge..\n")
 # Open a connection to the camera
-cap = cv2.VideoCapture(1)  # 0 is the default camera
+#cap = cv2.VideoCapture("testvid4.mp4")
+cap = cv2.VideoCapture(1)
 
 # Check if the camera opened successfully
 if not cap.isOpened():
@@ -24,7 +32,7 @@ ret,frame=cap.read()
 if not ret:
     print("could not read frame")
     cap.release()
-    cap.exit()
+    exit()
 
 height, width, _ = frame.shape
 
@@ -44,9 +52,10 @@ while True:
     right_vehicles=0   
     center_x = width // 2
     now=dt.datetime.now()
-
+    cv2.putText(frame, str(now), (10, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
+    
     # Perform detection
-    results = model.predict(source=frame, conf=0.1)  # Adjust `conf` as needed    
+    results = model.predict(source=frame, conf=0.2,iou=0.3)  # Adjust `conf` as needed    
     
     
     # Loop through the detected objects
@@ -70,18 +79,16 @@ while True:
                     emergency_left +=1
 
             if emergency_left>emergency_right:
-                print("left green")
+                send_bit('1')
             elif emergency_right>left_vehicles:
-                print("right green")
+                send_bit('0')
             elif right_vehicles > left_vehicles:
-                print("right green")
-            else:
-                print("left green")
+                send_bit('1')            
 
            
             cv2.putText(frame, str(now), (10, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)           
-            #cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 20), 1)            
-            cv2.putText(frame, f"{model.names[cls]}", (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)       
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 20), 1)            
+            cv2.putText(frame, f"{model.names[cls]} {round(float(confidence[0]),2)}", (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)       
             cv2.circle(frame, (int(obj_center_x), int(obj_center_y)), 5, (255,0,0), -1)
 
     # Display the resulting frame
@@ -95,3 +102,4 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 ser.close()
+print(f"end time : {dt.datetime.now()}")

@@ -1,0 +1,6 @@
+
+Q&A: potential questions – What is “Labelling”?
+Ans - labelling means annotating the image so that the object we want the model to detect is enclosed by a rectangle
+ · Labelling images means manually identifying and marking specific objects within an image. This involves drawing bounding boxes around objects of interest and assigning them appropriate labels. So here, they would be :Ambulances, cars and fire trucks.
+·  Purpose of Labelling: The main purpose of labelling is to provide the model with accurate examples of what each object looks like. These labelled images serve as the 'ground truth' data that the model learns from. By showing the model many examples of each type of vehicle with their corresponding labels, the model learns to recognize and differentiate between these objects in new, unseen images.
+
